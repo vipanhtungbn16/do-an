@@ -1,0 +1,92 @@
+
+.sidebar{
+  color:white;
+  background-color: var(--bg-color);
+  float: left;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  padding: 0.5rem;
+  transition: 0.3s ease;
+  width: var(--nav-width);
+  padding: 1.5rem 1.5rem 2rem;
+  z-index: 999;
+}
+.nav{
+  height: 100%;
+  flex-direction: column;
+  overflow: hidden;
+  &__list{
+    width: 100%;
+  }
+  &__brand{
+    display: grid;
+    grid-template-columns: max-content max-content;
+    align-items: center;
+    margin-bottom: 2rem;
+    column-gap: .75rem;
+    padding: .75rem;
+    a{
+      text-decoration: none;
+
+    }
+  }
+  &__toggle{
+     font-size: 1.25rem;
+    cursor: pointer;
+  }
+  &__logo{
+    color: #fff;
+    font-weight: 600;
+  }
+
+  &__link{
+     display: grid;
+     grid-template-columns: max-content max-content;
+     align-items: center;
+     column-gap: .75rem;
+     padding: .75rem;
+     border-radius: 0.5rem;
+     color: white;
+     transition: .3s;
+    text-decoration: none;
+
+      &:hover{
+       background-color: var(--first-color);
+        color: white;
+
+      }
+  }
+
+  &__item{
+    margin: 10px 0 ;
+    position: relative;
+    &:after{
+      content: '';
+      position: absolute;
+      top: 100%;
+      width: 100%;
+      height: 10px;
+      left: 0;
+    }
+  }
+  &__toggle{
+    font-size: 1.25rem;
+    color: white;
+  }
+  &__name{
+    font-size: .875rem;
+  }
+
+}
+.expander{
+  width: 15vw;
+}
+.active{
+  .nav__link{
+    background-color: var(--first-color);
+
+  }
+}

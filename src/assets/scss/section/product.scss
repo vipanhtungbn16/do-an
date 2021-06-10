@@ -1,0 +1,100 @@
+.product{
+  background-color: #F2F3F8;
+  &__header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    &-btn{
+      color: white !important;
+      background-color: var(--info) !important;
+      border-radius: 50em !important;
+      font-size: 15px!important;
+      &:hover{
+        opacity: 0.6;
+        transition: .3s;
+      }
+      a{
+        text-decoration: none ;
+        &:visited{
+          color: #FFFFFF;
+        }
+      }
+    }
+
+  }
+  &__content{
+    box-shadow: 0 0 13px 0 rgb(82 63 105 / 5%);
+    background-color: #fff;
+    margin-bottom: 20px;
+    border-color: #ebedf2;
+    border-radius: .25rem;
+    font-size: 15px;
+    font-weight: 500;
+    &-header{
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 25px;
+      border-bottom: 1px solid #ebedf2;
+    }
+
+    &-table{
+      table{
+       width: 100%;
+
+      }
+      .table-header{
+        th {
+          text-align: left;
+          padding: 12px 25px;
+          font-weight: 600;
+          font-size: 12px;
+        }
+      }
+      tbody{
+          td{
+            text-align: left  ;
+            padding: 12px 25px;
+          }
+        .text-product{
+          color: #6c757d!important;
+          font-size: 12px;
+        }
+        .text-status{
+          font-size: 12px;
+
+        }
+        .img-product{
+          object-fit: cover;
+          width: 50px;
+          height: 50px;
+          max-height: 100%;
+        }
+        .product-action{
+          display: flex;
+          align-items: center;
+          .btn-soft{
+            width: 34px;
+            height: 34px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            margin-right: 10px;
+            cursor: pointer;
+          }
+          .success{
+            background-color: var(--soft-success);
+          }
+          .primary{
+            background-color: var(--soft-primary);
+          }
+          .danger{
+            background-color: var(--soft-danger);
+          }
+        }
+      }
+    }
+  }
+
+}

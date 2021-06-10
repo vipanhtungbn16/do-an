@@ -1,0 +1,44 @@
+.site__navbar{
+ .navbar{
+   display: flex;
+   justify-content: space-between;
+   &__hello{
+     font-size: 35px;
+     color: var(--bg-color);
+     .narbar__hello-name{
+       font-weight: bold;
+     }
+   }
+
+
+   &__action{
+     display: flex;
+     align-items: center;
+     &-noti, &-user {
+       padding: 10px;
+       background-color: white;
+       box-shadow: 0 0 13px 0 rgb(82 63 105 / 5%);
+
+       border-radius: 20px 5px;
+       cursor: pointer;
+       display: flex;
+     }
+
+     &-noti{
+       position: relative;
+      .is-noti{
+        position: absolute;
+        width: 14px;
+        height: 14px;
+        background-color: #5840BB;
+        border-radius: 50%;
+        border: 2px solid #ffffff;
+        right: -4px;
+        top: -2px;
+
+      }
+     }
+
+   }
+ }
+}

@@ -1,0 +1,32 @@
+:root{
+  --bg-color: #12192c;
+  --sidebar-item-hover: #38a169;
+  --sidebar-item-acive: #276749;
+  --nav-width:92px;
+  --first-color:#0c5df4;
+  --sub-color:#b6cefc;
+  --primary: #377dff;
+  --info: #25bcf1;
+  --success: #0abb75;
+  --soft-success: rgba(10, 187, 117, 0.15);
+  --soft-primary: rgba(55, 125, 255, 0.15);
+  --danger: #ef486a;
+  --soft-danger: rgba(239, 72, 106, 0.15);
+  --border-color: #898b92;
+  --tag-text-color:#212529
+}
+*,::before,::after{
+  box-sizing: border-box;
+}
+
+@import "animation/animation";
+//section
+@import "section/sidebar";
+@import "section/overview";
+@import "section/product";
+@import "section/addproduct";
+
+
+@import "layout/page";
+@import "layout/nav";
+@import "ui/index";

@@ -1,0 +1,105 @@
+.overview{
+  &__content{
+    display: flex;
+    justify-content: space-between;
+  }
+  .number__order{
+    font-weight: bold;
+    margin-left: 20px ;
+  }
+  .text{
+    font-size: 14px;
+    font-weight: normal;
+    text-align: left;
+  }
+  .box-icon{
+    padding: 10px;
+    background: #FFFFFF;
+    border-radius: 15px 5px;
+    display: flex;
+  }
+  &__order{
+    width: 320px;
+    height: 152px;
+    background: #C7F2FF;
+    border-radius: 50px 10px;
+    display: flex;
+    align-items: center;
+    font-size: 20px;
+    justify-content: center;
+    letter-spacing: 1px;
+    margin-right: 15px;
+  }
+  &__profit{
+    width: 440px;
+    height: 152px;
+    background: #FFE5EE;
+    border-radius: 10px 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    letter-spacing: 1px;
+
+
+  }
+
+  &__chart{
+    width: 100%;
+    #line-chart{
+      margin: 0 auto;
+    }
+    &-title{
+      color: var(--bg-color);
+      font-weight: bold;
+      text-align: left;
+    }
+  }
+
+  &__top{
+    &-header{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    &-content{
+
+    }
+    &-title{
+      font-weight: bold;
+      color: var(--bg-color);
+      font-size: 20px;
+    }
+    &-link{
+      color: var(--bg-color);
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .top-sell-list{
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .top-sell-item{
+      display: flex;
+      align-items: center;
+      margin: 20px 0;
+      .number{
+        font-size: 16px;
+      }
+      .item-img{
+        width: 64px;
+        height: 64px;
+        object-fit: cover;
+        margin: 0 24px;
+      }
+      .item-info{
+        .item-price{
+          font-weight: bold;
+          text-align: left;
+          letter-spacing: 1px;
+        }
+      }
+    }
+  }
+}

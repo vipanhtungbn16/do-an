@@ -1,0 +1,54 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600&display=swap');.p-24{
+  padding: 24px;
+}
+.mr-24{
+  margin-right: 24px;
+}
+.pages{
+  width: calc(100% - var(--nav-width));
+  margin-left: var(--nav-width);
+  transition: .3s ease;
+  padding: 24px ;
+  background-color: #F2F3F8;
+
+}
+.sidebar-open{
+  .pages{
+    margin-left: 15vw;
+    width: calc(100% - 15vw);
+    background-color: #F2F3F8;
+
+  }
+}
+.cards{
+  box-shadow: 0 0 13px 0 rgb(82 63 105 / 5%);
+  background-color: #fff;
+  border-color: #ebedf2;
+  border-radius: .25rem;
+}
+.title-text{
+  font-weight: 500;
+  font-size: 15px;
+  text-align: left;
+}
+.content-header{
+  padding: 12px 25px;
+  border-bottom: 1px solid #ebedf2;;
+}
+.fs-12{
+  font-size: 12px;
+}
+.multiselect__single{
+  font-size: 12px !important;
+  color: #898b92 !important;
+}
+.multiselect__tags{
+  border: 1px solid #898B92 !important;
+}
+.multiselect__select{
+  height: 100% !important;
+}
+.multiselect__placeholder{
+  color: #898b92 !important;
+  padding-left: 0.6rem !important;
+}
