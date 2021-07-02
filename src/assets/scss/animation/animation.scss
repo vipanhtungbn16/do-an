@@ -2,7 +2,7 @@
 .slide-left-leave-active,
 .slide-right-enter-active,
 .slide-right-leave-active {
-  transition-duration: 0.5s;
+  transition-duration: 0.4s;
   transition-property: height, opacity, transform;
   transition-timing-function: cubic-bezier(0.55, 0, 0.1, 1);
 }
@@ -18,4 +18,29 @@
 .slide-right-enter {
   opacity: 0;
   transform: translate(-20px, 0);
+}
+
+//dropdown
+.dropdown-enter {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: 0.3s all ease;
+}
+
+.dropdown-enter-to {
+  opacity: 1;
+  transform: translateY(0px);
+  transition: 0.3s all ease;
+}
+
+.dropdown-leave-to {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: 0.3s all ease;
+}
+
+@media (max-width: 250px) {
+  .drawer-language-value {
+    opacity: 0;
+  }
 }

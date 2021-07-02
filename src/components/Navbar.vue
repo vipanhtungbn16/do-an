@@ -12,7 +12,21 @@
             <box-icon name='bell' ></box-icon>
           </div>
           <div class="navbar__action-user">
-            <box-icon type='solid' name='user'></box-icon>
+            <p-dropdown :id="`user`" >
+             <div class="" slot="trigger" >
+               <box-icon type='solid' name='user'></box-icon>
+             </div>
+              <p-item>
+                <router-link class="item" to="/">
+                  Profile
+                </router-link>
+              </p-item>
+              <p-item>
+                <router-link class="item" to="/">
+                  Logout
+                </router-link>
+              </p-item>
+            </p-dropdown>
           </div>
         </div>
       </div>
@@ -20,8 +34,10 @@
   </nav>
 </template>
 <script>
+import PDropdown from "../../uikit/components/Dropdown/Dropdown";
+import PItem from "../../uikit/components/Dropdown/Item";
 export  default {
   name:'NavBar',
-
+  components: {PItem, PDropdown},
 }
 </script>

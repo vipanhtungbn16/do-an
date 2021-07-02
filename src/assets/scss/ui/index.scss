@@ -4,6 +4,7 @@
   font-size: 0.8125rem;
   line-height: 1.5;
   border-radius: 0.25rem;
+  width: 100%;
   border: 1px solid ;
   color: #898b92;
   background-color: #fff;
@@ -54,7 +55,7 @@
 
     }
     .list__preview{
-      width: 75%;
+      width: 70%;
       list-style: none;
       padding: 0;
       display: flex;
@@ -88,5 +89,65 @@
 
   label{
     width: 100%;
+  }
+}
+
+//checkbox
+.p-checkbox{
+  position: relative;
+  input[type="checkbox"].ios8-switch + label {
+
+  }
+  input[type="checkbox"].ios8-switch + label:before {
+    content: "";
+    position: absolute;
+    display: block;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 0;
+    width: 40px; /* x*5 */
+    height: 24px; /* x*3 */
+    border-radius: 16px; /* x*2 */
+    background: #fff;
+    border: 1px solid #d9d9d9;
+    -webkit-transition: all 0.3s;
+    transition: all 0.3s;
+  }
+  input[type="checkbox"].ios8-switch + label:after {
+    content: "";
+    position: absolute;
+    display: block;
+    left: 45%;
+    transform: translateX(-50%);
+    top: 0px;
+    width: 24px; /* x*3 */
+    height: 24px; /* x*3 */
+    border-radius: 16px; /* x*2 */
+    background: #fff;
+    border: 1px solid #d9d9d9;
+    -webkit-transition: all 0.3s;
+    transition: all 0.3s;
+  }
+  input[type="checkbox"].ios8-switch + label:hover:after {
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  }
+  input[type="checkbox"].ios8-switch:checked + label:after {
+    margin-left: 19px;
+  }
+  input[type="checkbox"].ios8-switch:checked + label:before {
+    background: #55d069;
+  }
+}
+
+.btn--primary{
+  color: #fff !important;
+  background-color: #0d6efd !important;
+  border-color: #0d6efd !important;
+  padding: 0.6rem 1.2rem !important;
+  font-size: 0.875rem !important;
+  transition: .3s !important;
+  &:hover{
+    opacity: 0.8;
+
   }
 }

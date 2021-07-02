@@ -1,0 +1,15 @@
+.category{
+  table{
+    span{
+      color: var(--tag-text-color);
+      font-weight: 400;
+    }
+    .product-action{
+      justify-content: flex-end;
+      .btn-soft{
+        margin-left: 10px;
+        margin-right: unset;
+      }
+    }
+  }
+}

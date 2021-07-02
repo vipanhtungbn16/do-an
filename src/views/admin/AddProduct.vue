@@ -2,10 +2,10 @@
   <div class="add__product  pages">
     <div class="container">
       <div class="row">
+        <div class="add__product-header mb-3">
+          <div class="title-text">Add New Product</div>
+        </div>
         <div class="col-md-8">
-          <div class="add__product-header mb-3">
-            <div class="title-text">Add New Product</div>
-          </div>
           <div class="add__product-content cards">
               <div class="content-header">
                 <div class="title-text">Product Information</div>
@@ -58,6 +58,14 @@
                   </label>
                   <div class="content__input">
                     <p-input placeholder="Eg. KG,gam..." type="text"></p-input>
+                  </div>
+                </div>
+                <div class="content__item">
+                  <label class=" content__label fs-12">Unit Price
+                    <span class="text-danger">*</span>
+                  </label>
+                  <div class="content__input">
+                    <p-input type="number"></p-input>
                   </div>
                 </div>
                 <div class="content__item">
@@ -169,8 +177,27 @@
               </div>
             </div>
           </div>
+          <div class="content-footer">
+            <button class="btn btn--primary">Save</button>
+          </div>
         </div>
-        <div class="col-md-4"></div>
+        <div class="col-md-4">
+          <div class="add__product-content cards">
+            <div class="content-header">
+              <div class="title-text">Configuration</div>
+            </div>
+
+            <div class="content">
+              <div class="content__item">
+                <label class=" content__label fs-12">Free Shipping
+                </label>
+                <div class="content__input">
+                    <p-checkbox></p-checkbox>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -180,9 +207,10 @@
 
 import ImageUpload from "../../../uikit/components/input/ImageUpload";
 import {color} from '../../share/color.js'
+import PCheckbox from "../../../uikit/components/input/PCheckbox";
 export default {
   name: "AddProduct",
-  components:{ImageUpload},
+  components:{PCheckbox, ImageUpload},
   data(){
     return{
       selected: null,

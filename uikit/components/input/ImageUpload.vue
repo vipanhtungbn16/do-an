@@ -70,7 +70,6 @@ export default{
     delImg(key){
       this.$delete(this.imgs,key);
       this.imgLen--;
-      console.log(this.imgs)
     },
     // submit(){
     //   for(let key in this.imgs){

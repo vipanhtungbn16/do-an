@@ -1,0 +1,31 @@
+.dropdown{
+  position: relative;
+  &__list{
+    z-index: 99;
+    position: absolute;
+    min-width: 200px;
+    max-width: 300px;
+    right: -10px;
+    background-color: #FFFFFF;
+    top: 150%;
+    padding: 5px 0;
+    border-radius: .25rem;
+    box-shadow: 0 0 13px 0 rgb(82 63 105 / 5%);
+      a{
+        text-decoration: none;
+        color: var(--tag-text-color);
+      }
+  }
+
+  &__item{
+    transition:.3s ease;
+    font-size: 12px;
+    padding: 5px;
+    &:hover{
+      background-color: var(--primary);
+      .item{
+        color: #FFFFFF;
+      }
+    }
+  }
+}
