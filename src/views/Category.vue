@@ -23,7 +23,8 @@
                 ></p-input>
               </div>
             </div>
-            <div class="product__content-table">
+            <vcl-table class="loading m-3" v-if="isFetching"></vcl-table>
+            <div v-else class="product__content-table">
               <table>
                 <thead>
                 <tr class="table-header">
@@ -32,26 +33,31 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
+                <tr v-for="(item,i) in category" :key="i">
                   <td>
-                    <span class="fs-12">Nike Men 'Mercurial Superfly 7 Elite</span>
+                    <span class="fs-12">{{item.name}}</span>
                   </td>
                   <td>
                     <div class="product-action">
                       <div class="btn-soft primary">
-                        <box-icon color="#377dff" type='solid' name='edit'></box-icon>
+                        <i class="far fa-edit"></i>
                       </div>
                       <div class="btn-soft danger">
-                        <box-icon color="#ef486a" name='trash' ></box-icon>
+                        <i class="far fa-trash-alt"></i>
                       </div>
                     </div>
                   </td>
                 </tr>
                 </tbody>
               </table>
+              <ppagination
+                  :total="count"
+                  :perPage.sync="filter.limit"
+                  :current.sync="filter.page"
+              >
+              </ppagination>
             </div>
           </div>
-          <div class="product__footer"></div>
         </div>
       </div>
     </div>
@@ -59,9 +65,54 @@
 </template>
 
 <script>
+import {mapActions,mapState} from 'vuex'
+import {FETCH_CATEGORY} from "../store/modules/category";
+import minxinRouter from "../minxis/route"
 
 export default {
   name: "category",
+  components:{},
+  mixins:[minxinRouter],
+  data(){
+    return{
+      filter:{
+        limit:5,
+        page:1,
+      },
+      isFetching:false
+    }
+  },
+  created() {
+
+    },
+  mounted() {
+      this.init()
+    },
+  computed:{
+    ...mapState('category',{
+      count:state => state.count,
+      category:state => state.category
+    })
+  },
+  methods:{
+    ...mapActions('category',[FETCH_CATEGORY]),
+    init(){
+      this.isFetching = true
+      this.handleUpdateRouteQuery()
+     const result =  this[FETCH_CATEGORY](this.filter)
+      if(!result.success){
+        this.isFetching = false
+      }
+      this.isFetching = false
+    }
+  },
+  watch:{
+    filter:{
+      handler:function (){
+        this.init()
+      },deep:true
+    }
+  }
 };
 </script>
 

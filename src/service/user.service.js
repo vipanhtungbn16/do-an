@@ -20,8 +20,6 @@ async function login(email,password){
 
 
 
-
-
 function handleResponse(response) {
     return response.text().then(text => {
         const data = text && JSON.parse(text);
@@ -38,5 +36,6 @@ function handleResponse(response) {
 }
 
 export const userService = {
-    login
+    login,
+    handleResponse
 }
