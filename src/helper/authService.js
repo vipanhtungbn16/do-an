@@ -48,7 +48,8 @@ const AuthService = {
      * @returns {string}
      */
     getAccessToken() {
-        return this.user.accessToken
+        let user = JSON.parse(this.getStorage())
+        return user.accessToken
     },
 
     /**

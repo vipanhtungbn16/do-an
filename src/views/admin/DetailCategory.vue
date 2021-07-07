@@ -13,12 +13,11 @@
                   <span class="text-danger">*</span>
                 </label>
                 <div class="content__input col-md-9">
-                  <p-input v-model="name" placeholder="Name" type="text"></p-input>
+                  <p-input v-model="name" :value="name" placeholder="Name" type="text"></p-input>
                 </div>
               </div>
               <div class="content__item">
-                <label class=" content__label col-md-3 fs-12">Category
-                  <span class="text-danger">*</span>
+                <label class=" content__label col-md-3 fs-12">Parent Category
                 </label>
                 <div class="content__input col-md-9">
                   <multiselect
@@ -48,47 +47,57 @@
 </template>
 <script>
 import {mapActions,mapState} from 'vuex'
-import {FETCH_CATEGORY,CREATE_CATEGORY} from "../../store/modules/category";
+import {FETCH_CATEGORY, DETAIL_CATEGORY,UPDATE_CATEGORY} from "../../store/modules/category";
 export default {
-  name:'AddCategory',
+  name:'DetailCategory',
   data(){
     return{
       selectedParent:null,
-      options:[ { name: 'Vue.js', language: 'JavaScript' },
-        { name: 'Rails', language: 'Ruby' },
-        { name: 'Sinatra', language: 'Ruby' },
-        { name: 'Laravel', language: 'PHP' }],
       name:''
     }
   },
   computed:{
     ...mapState('category',{
-      listCategory:(state) =>state.category
+      listCategory:(state) =>state.category,
+      category:(state)=>state.detail_category
     })
   },
   methods:{
-    ...mapActions('category',[FETCH_CATEGORY,CREATE_CATEGORY]),
+    ...mapActions('category',[FETCH_CATEGORY,DETAIL_CATEGORY,UPDATE_CATEGORY]),
     async init(){
-      let result=  await this[FETCH_CATEGORY]()
+     const { id } = this.$route.params
+      await this[FETCH_CATEGORY]()
+      let result =  await this[DETAIL_CATEGORY](id)
       if(!result.success){
         this.$toast.success(result.message, {
           position: "top-right",
         })
         return
       }
+      this.name = this.category.name
+      if(this.category.parentID){
+        this.selectedParent = this.listCategory.filter(element =>{
+          return element._id == this.category.parentID
+        })
+      }
     },
     handleSelect(value){
-     this.selectedParent = value.parentID
+      this.selectedParent = value.parentID
     },
     handleRemove(){
       this.selectedParent = null
     },
     async handleCreate(){
+      const { id } = this.$route.params
       let params = {
-        name:this.name,
-        parentID:this.selectedParent
+        id:id,
+        content:{
+          name:this.name,
+          parentID:this.selectedParent[0]._id
+        }
       }
-      let result= await this[CREATE_CATEGORY](params)
+      console.log(params)
+      let result= await this[UPDATE_CATEGORY](params)
       if(!result.success){
         this.$toast.success(result.message, {
           position: "top-right",

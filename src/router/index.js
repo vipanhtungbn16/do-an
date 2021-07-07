@@ -48,6 +48,11 @@ const routes = [
     name:'category',
     meta: { transitionName: 'slide' },
   },
+  { path: '/admin/category/:id',component: () =>
+        import(/* webpackChunkName: "about" */ "../views/admin/DetailCategory"),
+    name:'category-detail',
+    meta: { transitionName: 'slide' },
+  },
   { path: '/admin/category/add',component: () =>
         import(/* webpackChunkName: "about" */ "../views/admin/AddCategory"),
     name:'add-category'

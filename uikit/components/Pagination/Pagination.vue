@@ -1,5 +1,5 @@
 <template>
-  <div class="pagination-box">
+  <div v-if="pageCount > 0" class="pagination-box">
     <nav>
       <ul class="p__pagination">
         <li class="p__pagination-item" :class="{ disabled: !hasPrev }">
