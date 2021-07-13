@@ -159,6 +159,35 @@
                   />
                 </div>
               </div>
+
+              <div class="content__item">
+                <table class="content__item-table">
+                  <thead>
+                    <tr class="table-header">
+                      <th width="50">Varian</th>
+                      <th width="150">Varian Price</th>
+                      <th width="150">Quantity</th>
+                      <th width="150">Photo</th>
+                      <th> </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  <tr>
+                    <td>M</td>
+                    <td>
+                      <p-input placeholder="Price" type="text"></p-input>
+                    </td>
+                    <td>
+                      <p-input placeholder="Quantity" type="text" ></p-input>
+                    </td>
+                    <td>
+                      <single-upload :id="1" ></single-upload>
+                    </td>
+                    <td></td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
 
@@ -206,11 +235,12 @@
 <script>
 
 import ImageUpload from "../../../uikit/components/input/ImageUpload";
+import SingleUpload from "../../../uikit/components/input/SingleUpload";
 import {color} from '../../share/color.js'
 import PCheckbox from "../../../uikit/components/input/PCheckbox";
 export default {
   name: "AddProduct",
-  components:{PCheckbox, ImageUpload},
+  components:{PCheckbox, ImageUpload,SingleUpload},
   data(){
     return{
       selected: null,
@@ -257,6 +287,9 @@ export default {
           (element) => this.valueSize === element
       )
       if (i) {
+        this.$toast.error('Size is exits', {
+          position: "top-right",
+        })
         return
       }
       this.optionSize.push(this.valueSize)

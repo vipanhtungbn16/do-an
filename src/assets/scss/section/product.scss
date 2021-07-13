@@ -101,3 +101,22 @@
   }
 
 }
+
+.add__product{
+  .content__item{
+    &-table{
+      width: 100%;
+      font-size: 12px;
+      .table-header{
+      }
+      th,td{
+        font-weight: normal;
+        padding: 10px;
+        border: 1px solid var(--border-color);
+      }
+
+
+
+    }
+  }
+}

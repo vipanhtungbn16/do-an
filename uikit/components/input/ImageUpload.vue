@@ -12,9 +12,9 @@
   <div class="multi__upload-preview">
     <div class="fake-title">List</div>
     <ul class="list__preview">
-      <li v-for='(value, key) in imgs' :key="key" class="list__preview-item col-md-3">
-        <img :src="getObjectURL(value)">
-        <a class="close" @click="delImg(key)">
+      <li v-for='(value, key) in responseFile' :key="key" class="list__preview-item col-md-3">
+        <img :src="value">
+        <a class="close" @click="delImg(key,value)">
           <box-icon color="#377dff" name='x'></box-icon>
         </a>
       </li>
@@ -23,6 +23,9 @@
 </div>
 </template>
 <script>
+import AuthService from "../../../src/helper/authService";
+import axios from "axios";
+import {userService} from "../../../src/service/user.service";
 export default{
   name:'ImageUpload',
   data(){
@@ -30,6 +33,8 @@ export default{
       formData:new FormData(),
       imgs: {},
       imgLen:0,
+      file:null,
+      responseFile:[]
     }
   },
   methods: {
@@ -42,8 +47,8 @@ export default{
       this.file = inputDOM.files;
       let oldLen=this.imgLen;
       let len=this.file.length+oldLen;
-      if(len>3){
-        alert('Up to 20 sheets can be uploaded');
+      if(len>10){
+        alert('Up to 10 sheets can be uploaded');
         return false;
       }
       for (let i=0; i < this.file.length; i++) {
@@ -55,6 +60,7 @@ export default{
         this.imgLen++;
         this.$set(this.imgs,this.file[i].name+'?'+new Date().getTime()+i,this.file[i]);
       }
+      this.submit()
     },
     getObjectURL(file) {
       let url = null ;
@@ -67,21 +73,59 @@ export default{
       }
       return url ;
     },
-    delImg(key){
-      this.$delete(this.imgs,key);
+    async delImg(key,value){
+      this.$delete(this.responseFile,key);
+      let input1 = document.getElementById('upload__file')
+      input1.value = ''
       this.imgLen--;
+      let img = value.split('/').pop()
+      let option = {
+        method:"POST",
+        headers:{
+          "Content-type": "application/json",
+          "x-access-token": AuthService.getAccessToken(),
+        },
+        body:JSON.stringify({name:img})
+      }
+      await fetch('http://localhost:3000/upload/delete',option).then(userService.handleResponse)
+      .then(res=>{
+        if(res.success){
+          this.$toast.success('Success', {
+            position: "top-right",
+          })
+        }
+
+      }).catch(err=>{
+            this.$toast.error(err.message, {
+              position: "top-right",
+            })
+          })
+
+
     },
-    // submit(){
-    //   for(let key in this.imgs){
-    //     let name=key.split('?')[0];
-    //     this.formData.append('multipartFiles',this.imgs[key],name);
-    //   }
-    //   this.$http.post('/opinion/feedback', this.formData,{
-    //     headers: {'Content-Type': 'multipart/form-data'}
-    //   }).then(res => {
-    //     this.alertShow=true;
-    //   });
-    // },
+     async submit(){
+      for(let key in this.imgs){
+        let name=key.split('?')[0];
+        this.formData.append('files',this.imgs[key],name);
+      }
+
+       await axios.post('/upload/multi', this.formData,{
+        headers: {'Content-Type': 'multipart/form-data',
+          "x-access-token": AuthService.getAccessToken(),
+        },
+      }).then(res => {
+         this.$toast.success('Success', {
+           position: "top-right",
+         })
+        this.responseFile = res.data.file
+        this.imgs = {}
+         this.formData.delete('files')
+      }).catch(err=>{
+         this.$toast.error(err.message, {
+           position: "top-right",
+         })
+       });
+    },
   }
 }
 </script>
