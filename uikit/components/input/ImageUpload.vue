@@ -90,6 +90,7 @@ export default{
       await fetch('http://localhost:3000/upload/delete',option).then(userService.handleResponse)
       .then(res=>{
         if(res.success){
+          this.$emit('multiFile',this.responseFile)
           this.$toast.success('Success', {
             position: "top-right",
           })
@@ -118,6 +119,7 @@ export default{
            position: "top-right",
          })
         this.responseFile = res.data.file
+         this.$emit('multiFile',this.responseFile)
         this.imgs = {}
          this.formData.delete('files')
       }).catch(err=>{

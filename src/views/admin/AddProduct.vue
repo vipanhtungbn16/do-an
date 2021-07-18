@@ -16,7 +16,7 @@
                   <span class="text-danger">*</span>
                   </label>
                   <div class="content__input">
-                    <p-input placeholder="Product name" type="text"></p-input>
+                    <p-input placeholder="Product name" v-model="name" type="text"></p-input>
                   </div>
                 </div>
                 <div class="content__item">
@@ -26,7 +26,7 @@
                   <div class="content__input">
                     <multiselect
                         v-model="selected"
-                        :options="options"
+                        :options="listCategory"
                         :searchable="true"
                         :close-on-select="true"
                         :allow-empty="false"
@@ -36,28 +36,28 @@
                     </multiselect>
                   </div>
                 </div>
-                <div class="content__item">
-                  <label class=" content__label fs-12">Brand
-                    <span class="text-danger">*</span>
-                  </label>
-                  <div class="content__input">
-                    <multiselect
-                        v-model="selectedBrand"
-                        :options="optionsBrand"
-                        :searchable="true"
-                        :close-on-select="true"
-                        label="name"
-                        placeholder="Select one">
-                      >
-                    </multiselect>
-                  </div>
-                </div>
+<!--                <div class="content__item">-->
+<!--                  <label class=" content__label fs-12">Brand-->
+<!--                    <span class="text-danger">*</span>-->
+<!--                  </label>-->
+<!--                  <div class="content__input">-->
+<!--                    <multiselect-->
+<!--                        v-model="selectedBrand"-->
+<!--                        :options="optionsBrand"-->
+<!--                        :searchable="true"-->
+<!--                        :close-on-select="true"-->
+<!--                        label="name"-->
+<!--                        placeholder="Select one">-->
+<!--                      >-->
+<!--                    </multiselect>-->
+<!--                  </div>-->
+<!--                </div>-->
                 <div class="content__item">
                   <label class=" content__label fs-12">Unit
                     <span class="text-danger">*</span>
                   </label>
                   <div class="content__input">
-                    <p-input placeholder="Eg. KG,gam..." type="text"></p-input>
+                    <p-input placeholder="Eg. KG,gam..." v-model="unit" type="text"></p-input>
                   </div>
                 </div>
                 <div class="content__item">
@@ -65,15 +65,7 @@
                     <span class="text-danger">*</span>
                   </label>
                   <div class="content__input">
-                    <p-input type="number"></p-input>
-                  </div>
-                </div>
-                <div class="content__item">
-                  <label class=" content__label fs-12">Quantity
-                    <span class="text-danger">*</span>
-                  </label>
-                  <div class="content__input">
-                    <p-input v-model="quantity" type="number"  min="0"></p-input>
+                    <p-input type="number" v-model="unitprice"></p-input>
                   </div>
                 </div>
                 <div class="content__item">
@@ -91,7 +83,7 @@
               <div class="title-text">Product Images</div>
             </div>
             <div class="content">
-              <image-upload></image-upload>
+              <image-upload @multiFile ="handleMulti" ></image-upload>
             </div>
           </div>
           <div class="add__product-content cards">
@@ -143,7 +135,7 @@
                 <div class="content__input size__option">
                   <template v-for="(option, j) in optionSize">
                     <div :key="j" class="p-button">
-                      {{ option }} |
+                      {{ option.size }} |
                       <span
                           class="p-icon-x"
                           @click="handleRemoveShopValue(option)"
@@ -160,30 +152,28 @@
                 </div>
               </div>
 
-              <div class="content__item">
+              <div v-if="optionSize.length" class="content__item">
                 <table class="content__item-table">
                   <thead>
                     <tr class="table-header">
                       <th width="50">Varian</th>
                       <th width="150">Varian Price</th>
                       <th width="150">Quantity</th>
-                      <th width="150">Photo</th>
-                      <th> </th>
+                      <th width="250">Photo</th>
                     </tr>
                   </thead>
                   <tbody>
-                  <tr>
-                    <td>M</td>
+                  <tr v-for="(item,i) in optionSize" :key="i">
+                    <td>{{item.size}}</td>
                     <td>
-                      <p-input placeholder="Price" type="text"></p-input>
+                      <p-input placeholder="Price" type="text" v-model="item.price"></p-input>
                     </td>
                     <td>
-                      <p-input placeholder="Quantity" type="text" ></p-input>
+                      <p-input placeholder="Quantity" type="text" v-model="item.quantity" ></p-input>
                     </td>
                     <td>
-                      <single-upload :id="1" ></single-upload>
+                      <single-upload @file="updateFile" :id="i" ></single-upload>
                     </td>
-                    <td></td>
                   </tr>
                   </tbody>
                 </table>
@@ -207,7 +197,7 @@
             </div>
           </div>
           <div class="content-footer">
-            <button class="btn btn--primary">Save</button>
+            <button @click="handleCreateProduct" class="btn btn--primary">Save</button>
           </div>
         </div>
         <div class="col-md-4">
@@ -233,11 +223,14 @@
 </template>
 
 <script>
-
+import { FETCH_CATEGORY} from "../../store/modules/category";
+import {CREATE_PRODUCT} from "../../store/modules/product";
+import {mapActions,mapState} from 'vuex'
 import ImageUpload from "../../../uikit/components/input/ImageUpload";
 import SingleUpload from "../../../uikit/components/input/SingleUpload";
 import {color} from '../../share/color.js'
 import PCheckbox from "../../../uikit/components/input/PCheckbox";
+import {defaultVariant} from "../../helper/product";
 export default {
   name: "AddProduct",
   components:{PCheckbox, ImageUpload,SingleUpload},
@@ -266,10 +259,33 @@ export default {
       discount:0,
       listColor:color,
       optionSize:[],
-      valueSize:''
+      valueSize:'',
+      multiFile:[],
+      name:'',
+      unit:'',
+      unitprice:0,
     }
   },
+  computed:{
+    ...mapState('category',{
+      listCategory:(state) =>state.category
+    })
+  },
+  created() {
+    this.init()
+  },
   methods: {
+    ...mapActions('category',[FETCH_CATEGORY]),
+    ...mapActions('product',[CREATE_PRODUCT]),
+    async init(){
+      let result=  await this[FETCH_CATEGORY]()
+      if(!result.success){
+        this.$toast.success(result.message, {
+          position: "top-right",
+        })
+        return
+      }
+    },
     handleRemoveShopValue(option) {
       let index = this.optionSize.indexOf(option)
       if (index > -1) {
@@ -284,7 +300,7 @@ export default {
         return
       }
       const i = this.optionSize.some(
-          (element) => this.valueSize === element
+          (element) => this.valueSize === element.size
       )
       if (i) {
         this.$toast.error('Size is exits', {
@@ -292,9 +308,40 @@ export default {
         })
         return
       }
-      this.optionSize.push(this.valueSize)
+      this.optionSize.push(defaultVariant(this.valueSize))
       this.valueSize = ''
     },
+    updateFile(file,i){
+      this.optionSize[i].image = file
+    },
+    handleMulti(file){
+     this.multiFile = file
+    },
+     async handleCreateProduct(){
+      let params={
+        name:this.name,
+        description:this.editorData,
+        discount:this.discount,
+        category:this.selected,
+        color:this.selectedColor,
+        image:this.multiFile,
+        varians:this.optionSize
+      }
+       await this[CREATE_PRODUCT](params).then(res=>{
+         if(res){
+           this.$toast.success('Success', {
+             position: "top-right",
+           })
+         }
+       }).catch(err=>{
+        err.forEach(element=>{
+          this.$toast.error(element.msg, {
+            position: "top-right",
+          })
+        })
+
+       })
+    }
   }
 }
 </script>

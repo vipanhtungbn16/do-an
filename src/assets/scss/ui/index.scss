@@ -52,7 +52,6 @@
       opacity: 0;
       visibility: hidden;
       flex: 1;
-
     }
     .list__preview{
       width: 70%;
@@ -89,6 +88,12 @@
 
   label{
     width: 100%;
+  }
+  &.sm{
+    margin: 0;
+    .multi__upload-preview{
+      justify-content: center;
+    }
   }
 }
 

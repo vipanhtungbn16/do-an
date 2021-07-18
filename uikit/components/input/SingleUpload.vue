@@ -1,6 +1,6 @@
 <template>
-  <div class="multi__upload">
-    <div class="multi__upload-content content__item">
+  <div class="multi__upload sm">
+    <div class="multi__upload-content">
       <div class="multi__upload-input">
         <label :for="['upload__file-single'+id]">
           <span class="upload__file-title">Choose file</span>
@@ -8,7 +8,7 @@
         <input :id="['upload__file-single'+id]" hidden type="file" class="upload" @change="addImgSingle" :ref="['inputSingle'+id]"  accept="image/png,image/jpeg,image/gif,image/jpg"/>
       </div>
     </div>
-    <div class="multi__upload-preview">
+    <div v-if="responseFile.length" class="multi__upload-preview">
       <ul class="list__preview">
         <li v-for='(value, key) in responseFile' :key="key" class="list__preview-item ">
           <img :src="value">
@@ -92,6 +92,7 @@ export default{
       let input1 = document.getElementById(`upload__file-single${this.id}`)
       input1.value = ''
       this.$delete(this.responseFile,key);
+     this.$emit('file',"",this.id)
       let img = value.split('/').pop()
       let option = {
         method:"POST",
@@ -130,6 +131,7 @@ export default{
           position: "top-right",
         })
         this.responseFile = res.data.file
+        this.$emit('file',this.responseFile[0],this.id)
         this.imgSingle = {}
         this.formData.delete('files')
       }).catch(err=>{
