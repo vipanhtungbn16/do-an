@@ -32,6 +32,11 @@ const routes = [
     name:'product',
     meta: { transitionName: 'slide' },
   },
+  { path: '/admin/product/detail/:id',component: () =>
+        import(/* webpackChunkName: "about" */ "../views/admin/DetailProduct.vue"),
+    name:'product-detail',
+    meta: { transitionName: 'slide' },
+  },
   { path: '/admin/product/add',component: () =>
         import(/* webpackChunkName: "about" */ "../views/admin/AddProduct"),
     name:'add-product',

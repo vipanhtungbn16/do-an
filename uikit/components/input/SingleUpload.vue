@@ -31,7 +31,11 @@ export default{
     id:{
       type:[String,Number],
       require:true
-    }
+    },
+    oldFile:{
+     type: String,
+    },
+    detail:Boolean,
   },
   data(){
     return {
@@ -52,16 +56,18 @@ export default{
         this.responseFile.forEach( (elment,index)=>{
           this.$delete(this.responseFile,index);
           let img = elment.split('/').pop()
-          let option = {
-            method:"POST",
-            headers:{
-              "Content-type": "application/json",
-              "x-access-token": AuthService.getAccessToken(),
-            },
-            body:JSON.stringify({name:img})
+          if(!this.detail){
+            let option = {
+              method:"POST",
+              headers:{
+                "Content-type": "application/json",
+                "x-access-token": AuthService.getAccessToken(),
+              },
+              body:JSON.stringify({name:img})
+            }
+            fetch('http://localhost:3000/upload/delete',option)
           }
-           fetch('http://localhost:3000/upload/delete',option)
-        } )
+        })
       }
       let inputDOM = this.$refs['inputSingle'+ this.id];
       // Get file data through DOM
@@ -93,28 +99,31 @@ export default{
       input1.value = ''
       this.$delete(this.responseFile,key);
      this.$emit('file',"",this.id)
-      let img = value.split('/').pop()
-      let option = {
-        method:"POST",
-        headers:{
-          "Content-type": "application/json",
-          "x-access-token": AuthService.getAccessToken(),
-        },
-        body:JSON.stringify({name:img})
-      }
-      await fetch('http://localhost:3000/upload/delete',option).then(userService.handleResponse)
-          .then(res=>{
-            if(res.success){
-              this.$toast.success('Success', {
-                position: "top-right",
-              })
-            }
+     if(!this.detail){
+       let img = value.split('/').pop()
+       let option = {
+         method:"POST",
+         headers:{
+           "Content-type": "application/json",
+           "x-access-token": AuthService.getAccessToken(),
+         },
+         body:JSON.stringify({name:img})
+       }
+       await fetch('http://localhost:3000/upload/delete',option).then(userService.handleResponse)
+           .then(res=>{
+             if(res.success){
+               this.$toast.success('Success', {
+                 position: "top-right",
+               })
+             }
 
-          }).catch(err=>{
-            this.$toast.error(err.message, {
-              position: "top-right",
-            })
-          })
+           }).catch(err=>{
+             this.$toast.error(err.message, {
+               position: "top-right",
+             })
+           })
+     }
+
     },
     async submit(){
       for(let key in this.imgSingle){
@@ -140,6 +149,18 @@ export default{
         })
       });
     },
+  },
+  watch:{
+    oldFile:{
+      handler (){
+        if(this.oldFile){
+          this.responseFile = [this.oldFile]
+        }
+      },
+      immediate:true
+    },
+
+
   }
 }
 </script>

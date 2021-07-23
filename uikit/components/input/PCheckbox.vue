@@ -1,7 +1,7 @@
 <template>
   <div class="p-checkbox">
-    <input hidden class="ios8-switch" id="checkbox"  type="checkbox"   @input="onInput" @change="onChange" />
-    <label for='checkbox'></label>
+    <input hidden class="ios8-switch" :id="['checkbox' + name]"  type="checkbox"  v-model="checked" @change="onChange" />
+    <label :for="['checkbox' + name]"></label>
   </div>
 
 </template>
@@ -10,37 +10,30 @@
 export default {
   name: 'PCheckbox',
   props: {
-    placeholder:{
-      type:String,
-      default:''
-    },
-    type:{
-      type:String,
-      default:'text'
+    name:String,
+    value:{
+     type: Boolean,
+      default:false
     }
   },
-  /* Can add validation here
-  watch: {
-    value: {
-      handler(newValue, oldValue) {
-
-      },
-    },
-  }, */
-  computed: {
-    name() {
-      return this.label.toLowerCase();
-    },
+  data(){
+    return{
+    checked:false
+    }
   },
+  created() {
+  this.checked = this.value
+    },
   methods: {
-    onInput(event) {
+    onChange() { // Supports .lazy
       // Can add validation here
-      this.$emit('input', event.target.value);
-    },
-    onChange(event) { // Supports .lazy
-      // Can add validation here
-      this.$emit('change', event.target.value);
+      this.$emit('change',this.checked);
     },
   },
+  watch:{
+    'value':function (){
+      this.checked = this.value
+    }
+  }
 }
 </script>

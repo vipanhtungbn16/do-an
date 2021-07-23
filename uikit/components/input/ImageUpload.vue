@@ -28,6 +28,11 @@ import axios from "axios";
 import {userService} from "../../../src/service/user.service";
 export default{
   name:'ImageUpload',
+  props:{
+    oldFile:{
+      type:Array,
+    }
+  },
   data(){
     return {
       formData:new FormData(),
@@ -37,6 +42,7 @@ export default{
       responseFile:[]
     }
   },
+
   methods: {
     exitEdit(){
       this.$emit('closeEdit', false)
@@ -118,7 +124,7 @@ export default{
          this.$toast.success('Success', {
            position: "top-right",
          })
-        this.responseFile = res.data.file
+        this.responseFile = [...this.responseFile,...res.data.file]
          this.$emit('multiFile',this.responseFile)
         this.imgs = {}
          this.formData.delete('files')
@@ -128,6 +134,11 @@ export default{
          })
        });
     },
+  },
+  watch:{
+    oldFile:function (){
+      this.responseFile = this.oldFile
+    }
   }
 }
 </script>

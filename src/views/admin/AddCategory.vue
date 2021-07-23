@@ -69,7 +69,7 @@ export default {
   methods:{
     ...mapActions('category',[FETCH_CATEGORY,CREATE_CATEGORY]),
     async init(){
-      let result=  await this[FETCH_CATEGORY]()
+      let result=  await this[FETCH_CATEGORY]({})
       if(!result.success){
         this.$toast.success(result.message, {
           position: "top-right",
@@ -88,19 +88,23 @@ export default {
         name:this.name,
         parentID:this.selectedParent
       }
-      let result= await this[CREATE_CATEGORY](params)
-      if(!result.success){
-        this.$toast.success(result.message, {
-          position: "top-right",
+      await this[CREATE_CATEGORY](params).then(res =>{
+        if(res){
+          this.$toast.success('Success', {
+            position: "top-right",
+          })
+          this.$router.push({
+            name:'category'
+          })
+        }
+      }).catch(err=>{
+        err.forEach(element=>{
+          this.$toast.error(`${element.msg}`, {
+            position: "top-right",
+          })
         })
-        return
-      }
-      this.$toast.success('Success', {
-        position: "top-right",
       })
-      this.$router.push({
-        name:'category'
-      })
+
     }
   },
   created() {

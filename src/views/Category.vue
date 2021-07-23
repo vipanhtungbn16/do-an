@@ -132,9 +132,11 @@ export default {
     },
     async handleDelete(){
     await  this[DELETE_CATEGORY](this.idDelete).then(result=>{
-          this.$toast.success(result.message, {
-            position: "top-right",
-           })
+      if(result){
+        this.$toast.success(result.message, {
+          position: "top-right",
+        })
+      }
     }).catch(err=>{
       this.$toast.error(err.message, {
         position: "top-right",

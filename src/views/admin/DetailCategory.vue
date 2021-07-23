@@ -93,10 +93,9 @@ export default {
         id:id,
         content:{
           name:this.name,
-          parentID:this.selectedParent[0]._id
+          parentID:this.selectedParent?this.selectedParent._id:""
         }
       }
-      console.log(params)
       let result= await this[UPDATE_CATEGORY](params)
       if(!result.success){
         this.$toast.success(result.message, {

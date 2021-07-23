@@ -1,5 +1,7 @@
 import {userService} from "./user.service";
 import AuthService from "../helper/authService";
+import {buildQueryString} from "../utils/url";
+
 
 async function createProductService(payload){
     let option ={
@@ -16,7 +18,51 @@ async function createProductService(payload){
         })
 }
 
+async function getProductService(payload){
+    let option ={
+        method:"GET",
+        headers:{
+            "Content-type": "application/json",
+            "x-access-token": AuthService.getAccessToken(),
+        },
+    }
+    return await fetch(`http://localhost:3000/product/get?${buildQueryString(payload)}`,option).then(userService.handleResponse)
+        .then(product=>{
+            return product
+        })
+}
+async  function  deleteProductService(payload){
+    let option = {
+        method:"POST",
+        headers:{
+            "Content-type": "application/json",
+            "x-access-token": AuthService.getAccessToken(),
+        },
+    }
+    return await fetch(`http://localhost:3000/product/delete/${payload}`,option).then(userService.handleResponse)
+        .then(product=>{
+            return product
+        })
+
+}
+async  function  detailProductService(payload){
+    let option = {
+        method:"GET",
+        headers:{
+            "Content-type": "application/json",
+        },
+    }
+    return await fetch(`http://localhost:3000/product/detail/${payload}`,option).then(userService.handleResponse)
+        .then(product=>{
+            return product
+        })
+
+}
+
 
 export const productService = {
-    createProductService
+    createProductService,
+    getProductService,
+    deleteProductService,
+    detailProductService
 }
