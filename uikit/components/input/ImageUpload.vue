@@ -31,7 +31,8 @@ export default{
   props:{
     oldFile:{
       type:Array,
-    }
+    },
+    detail:Boolean,
   },
   data(){
     return {
@@ -84,29 +85,32 @@ export default{
       let input1 = document.getElementById('upload__file')
       input1.value = ''
       this.imgLen--;
-      let img = value.split('/').pop()
-      let option = {
-        method:"POST",
-        headers:{
-          "Content-type": "application/json",
-          "x-access-token": AuthService.getAccessToken(),
-        },
-        body:JSON.stringify({name:img})
-      }
-      await fetch('http://localhost:3000/upload/delete',option).then(userService.handleResponse)
-      .then(res=>{
-        if(res.success){
-          this.$emit('multiFile',this.responseFile)
-          this.$toast.success('Success', {
-            position: "top-right",
-          })
+      if(!this.detail){
+        let img = value.split('/').pop()
+        let option = {
+          method:"POST",
+          headers:{
+            "Content-type": "application/json",
+            "x-access-token": AuthService.getAccessToken(),
+          },
+          body:JSON.stringify({name:img})
         }
+        await fetch('http://localhost:3000/upload/delete',option).then(userService.handleResponse)
+            .then(res=>{
+              if(res.success){
+                this.$emit('multiFile',this.responseFile)
+                this.$toast.success('Success', {
+                  position: "top-right",
+                })
+              }
 
-      }).catch(err=>{
-            this.$toast.error(err.message, {
-              position: "top-right",
+            }).catch(err=>{
+              this.$toast.error(err.message, {
+                position: "top-right",
+              })
             })
-          })
+      }
+
 
 
     },

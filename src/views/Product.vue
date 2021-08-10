@@ -1,5 +1,5 @@
 <template>
-  <div class="product  pages">
+  <div class="product mt-100 pages">
     <div class="container">
       <div class="row">
         <div class="col-md-12">
@@ -61,8 +61,8 @@
                     </td>
                     <td>
                       <div class="product-action">
-                        <div class="btn-soft success">
-                            <box-icon color="#0abb75" size="sm" type='solid' name='show'></box-icon>
+                        <div @click="handleDeleteModalUp" class="btn-soft success" >
+                          <i class="far fa-eye"></i>
                         </div>
                         <div class="btn-soft primary">
                           <router-link :to="{name:'product-detail',
@@ -72,11 +72,11 @@
                           }"
                                        style="display: inline-flex"
                           >
-                          <box-icon color="#377dff" type='solid' name='edit'></box-icon>
+                            <i class="far fa-edit"></i>
                           </router-link>
                         </div>
                         <div @click="handleDeleteModal(item._id)" class="btn-soft danger">
-                          <box-icon color="#ef486a" name='trash' ></box-icon>
+                          <i class="far fa-trash-alt"></i>
                         </div>
                       </div>
                     </td>
@@ -95,6 +95,7 @@
           </div>
         </div>
       </div>
+      <modal-upload :visible.sync="isVisibleModalUpload"></modal-upload>
     </div>
     <modal-confirm :title="`Delete Confirmation`" :description="`Are you sure delete this ?`" @action="handleDelete"  :visible.sync="isVisibleModal">
     </modal-confirm>
@@ -106,10 +107,11 @@ import {mapActions,mapState} from 'vuex'
 import {GET_PRODUCT,DELETE_PRODUCT} from "../store/modules/product";
 import minxinRouter from "../minxis/route"
 import ModalConfirm from "../../uikit/components/Modal/ModalConfirm";
+import ModalUpload from "../../uikit/components/Modal/ModalUpload";
 export default {
   name: "product",
   mixins:[minxinRouter],
-  components:{ModalConfirm},
+  components:{ModalConfirm,ModalUpload},
   mounted() {
     this.init()
   },
@@ -122,6 +124,7 @@ export default {
       search:"",
       isFetching : false,
       isVisibleModal:false,
+      isVisibleModalUpload:false,
       idDelete:''
     }
 
@@ -146,6 +149,9 @@ export default {
     handleDeleteModal(id){
       this.isVisibleModal=true
       this.idDelete = id
+    },
+    handleDeleteModalUp(){
+      this.isVisibleModalUpload=true
     },
     async handleDelete(){
       await  this[DELETE_PRODUCT](this.idDelete).then(result=>{

@@ -2,13 +2,16 @@
   <div class=" h-100 layout__client d-flex">
     <div class="flex-grow-1">
       <div class="h-100">
+        <Header/>
         <router-view :key="$route.path"></router-view>
       </div>
     </div>
   </div>
 </template>
 <script>
+import Header from "./Header";
 export default {
-  name:'Index'
+  name:'Index',
+  components:{Header},
 }
 </script>

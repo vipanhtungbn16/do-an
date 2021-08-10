@@ -3,7 +3,6 @@
     <component :is="layout">
       <router-view :key="$route.name"></router-view>
     </component>
-
   </div>
 </template>
 

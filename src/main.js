@@ -15,11 +15,29 @@ import '@fortawesome/fontawesome-free/css/all.css'
 import '@fortawesome/fontawesome-free/js/all.js'
 import Toast from "vue-toastification";
 import "vue-toastification/dist/index.css";
+import VueAwesomeSwiper from 'vue-awesome-swiper'
+import 'swiper/swiper-bundle.css'
+
+import { Swiper as SwiperClass, Pagination, Mousewheel, Autoplay,Navigation } from 'swiper/core'
+
+import getAwesomeSwiper from 'vue-awesome-swiper/dist/exporter'
+
+// Swiper modules
+SwiperClass.use([Pagination, Mousewheel, Autoplay,Navigation])
+
+// -------------------------------------------------
+
+// Global use
+Vue.use(getAwesomeSwiper(SwiperClass))
+Vue.use(VueAwesomeSwiper, /* { default options with global component } */)
+
+
 
 
 // register globally
 Vue.component('multiselect', Multiselect)
 Vue.component('VclTable', VclTable)
+
 
 
 

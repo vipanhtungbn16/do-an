@@ -1,11 +1,11 @@
 <template>
-  <div class="pages mt-100 add__category">
+  <div class="pages mt-100 add__department">
     <div class="container">
       <div class="row">
         <div class="col-md-8 mx-auto">
           <div class="add__category-content cards">
             <div class="content-header">
-              <div class="title-text">Category Information</div>
+              <div class="title-text">Department Information</div>
             </div>
             <div class="content">
               <div class="content__item ">
@@ -13,22 +13,24 @@
                   <span class="text-danger">*</span>
                 </label>
                 <div class="content__input col-md-9">
-                  <p-input v-model="name" :value="name" placeholder="Name" type="text"></p-input>
+                  <p-input v-model="name" placeholder="Name" type="text"></p-input>
                 </div>
               </div>
               <div class="content__item">
-                <label class=" content__label col-md-3 fs-12">Parent Category
+                <label class=" content__label col-md-3 fs-12">Category
+                  <span class="text-danger">*</span>
                 </label>
                 <div class="content__input col-md-9">
                   <multiselect
-                      v-model="selectedParent"
+                      v-model="selectedCate"
                       :options="listCategory"
                       :searchable="true"
                       :close-on-select="true"
                       :allow-empty="true"
+                      :show-labels="true"
                       label="name"
-                      @select="handleSelect"
-                      @remove="handleRemove"
+                      :multiple="true"
+                      track-by="name"
                       placeholder="Select one">
                     >
                   </multiselect>
@@ -46,85 +48,76 @@
   </div>
 </template>
 <script>
-import {mapActions,mapState} from 'vuex'
-import {FETCH_CATEGORY, DETAIL_CATEGORY,UPDATE_CATEGORY} from "../../store/modules/category";
-import {FETCH_DEPARTMENT} from "../../store/modules/department";
+import {mapActions, mapState} from 'vuex'
+import {DETAIL_DEPARTMENT, UPDATE_DEPARTMENT} from "../../store/modules/department";
+import {FETCH_CATEGORY} from "../../store/modules/category";
 export default {
-  name:'DetailCategory',
+  name:'DetailDepartment',
   data(){
     return{
       selectedParent:null,
-      selectedDepart:null,
+      selectedCate:null,
       name:''
     }
   },
   computed:{
+    ...mapState('department',{
+      department:(state)=>state.detail_department
+    }),
     ...mapState('category',{
       listCategory:(state) =>state.category,
-      category:(state)=>state.detail_category
     }),
-    ...mapState('department',{
-      listDe :(state) => state.department
-    })
   },
   methods:{
-    ...mapActions('category',[FETCH_CATEGORY,DETAIL_CATEGORY,UPDATE_CATEGORY]),
-    ...mapActions('department',[FETCH_DEPARTMENT]),
+    ...mapActions('department',[DETAIL_DEPARTMENT,UPDATE_DEPARTMENT]),
+    ...mapActions('category',[FETCH_CATEGORY]),
+
     async init(){
-     const { id } = this.$route.params
-      let  [cate] = await Promise.all([
+      const { id } = this.$route.params
+      let [de, cate] = await Promise.all([
+        this[DETAIL_DEPARTMENT](id),
         this[FETCH_CATEGORY]({})
       ])
-      if(!cate.success ){
+      if(!cate.success || !de.success){
         this.$toast.error('Something went wrong.', {
           position: "top-right",
         })
         return
       }
-      let result =  await this[DETAIL_CATEGORY](id)
-      if(!result.success){
-        this.$toast.error(result.message, {
-          position: "top-right",
-        })
-        return
-      }
-      this.name = this.category.name
-      if(this.category.parentID){
-        this.selectedParent = this.listCategory.find(element =>{
-          return element._id == this.category.parentID
+      this.name = this.department.name
+      if(this.department.categorys){
+        this.selectedCate = this.department.categorys.map(element =>{
+          return this.listCategory.find(item=> item._id == element)
         })
       }
+    },
 
-
-    },
-    handleSelect(value){
-      this.selectedParent = value.parentID
-    },
-    handleRemove(){
-      this.selectedParent = null
-    },
     async handleCreate(){
       const { id } = this.$route.params
       let params = {
         id:id,
         content:{
           name:this.name,
-          parentID:this.selectedParent?this.selectedParent._id:"",
+          categorys:this.selectedCate
         }
       }
-      let result= await this[UPDATE_CATEGORY](params)
-      if(!result.success){
-        this.$toast.success(result.message, {
-          position: "top-right",
+      await this[UPDATE_DEPARTMENT](params).then(res =>{
+        if(res){
+          this.$toast.success('Success', {
+            position: "top-right",
+          })
+          this.$router.push({
+            name:'department'
+          })
+        }
+      }).catch(err=>{
+        err.forEach(element=>{
+          this.$toast.error(`${element.msg}`, {
+            position: "top-right",
+          })
         })
-        return
-      }
-      this.$toast.success('Success', {
-        position: "top-right",
       })
-      this.$router.push({
-        name:'category'
-      })
+
     }
   },
   created() {

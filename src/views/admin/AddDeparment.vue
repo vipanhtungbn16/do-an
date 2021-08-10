@@ -1,11 +1,11 @@
 <template>
-  <div class="pages mt-100 add__category">
+  <div class="pages mt-100 add__department">
     <div class="container">
       <div class="row">
         <div class="col-md-8 mx-auto">
           <div class="add__category-content cards">
             <div class="content-header">
-              <div class="title-text">Category Information</div>
+              <div class="title-text">Department Information</div>
             </div>
             <div class="content">
               <div class="content__item ">
@@ -22,14 +22,15 @@
                 </label>
                 <div class="content__input col-md-9">
                   <multiselect
-                      v-model="selectedParent"
+                      v-model="selectedCate"
                       :options="listCategory"
                       :searchable="true"
                       :close-on-select="true"
                       :allow-empty="true"
+                      :show-labels="true"
                       label="name"
-                      @select="handleSelect"
-                      @remove="handleRemove"
+                      :multiple="true"
+                      track-by="name"
                       placeholder="Select one">
                     >
                   </multiselect>
@@ -47,34 +48,31 @@
   </div>
 </template>
 <script>
-import {mapActions,mapState} from 'vuex'
-import {FETCH_CATEGORY,CREATE_CATEGORY} from "../../store/modules/category";
-import {FETCH_DEPARTMENT} from "../../store/modules/department";
+import {mapActions, mapState} from 'vuex'
+import {CREATE_DEPARTMENT} from "../../store/modules/department";
+import {FETCH_CATEGORY} from "../../store/modules/category";
 export default {
-  name:'AddCategory',
+  name:'AddDepartment',
   data(){
     return{
       selectedParent:null,
+      selectedCate:null,
       name:''
     }
   },
   computed:{
     ...mapState('category',{
       listCategory:(state) =>state.category,
-
     }),
-    ...mapState('department',{
-      listDe :(state) => state.department
-    })
   },
   methods:{
-    ...mapActions('category',[FETCH_CATEGORY,CREATE_CATEGORY]),
-    ...mapActions('department',[FETCH_DEPARTMENT]),
+    ...mapActions('department',[CREATE_DEPARTMENT]),
+    ...mapActions('category',[FETCH_CATEGORY]),
     async init(){
       let [result] = await Promise.all([
         this[FETCH_CATEGORY]({})
       ])
-      if(!result.success){
+      if(!result.success ){
         this.$toast.error('Something went wrong.', {
           position: "top-right",
         })
@@ -82,7 +80,7 @@ export default {
       }
     },
     handleSelect(value){
-     this.selectedParent = value.parentID
+      this.selectedParent = value.parentID
     },
     handleRemove(){
       this.selectedParent = null
@@ -90,15 +88,15 @@ export default {
     async handleCreate(){
       let params = {
         name:this.name,
-        parentID:this.selectedParent,
+        categorys:this.selectedCate
       }
-      await this[CREATE_CATEGORY](params).then(res =>{
+      await this[CREATE_DEPARTMENT](params).then(res =>{
         if(res){
           this.$toast.success('Success', {
             position: "top-right",
           })
           this.$router.push({
-            name:'category'
+            name:'department'
           })
         }
       }).catch(err=>{
@@ -110,9 +108,6 @@ export default {
       })
 
     }
-  },
-  created() {
-    this.init()
   }
 }
 </script>

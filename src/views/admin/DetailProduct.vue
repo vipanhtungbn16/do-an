@@ -1,5 +1,5 @@
 <template>
-  <div class="add__product  pages">
+  <div class="add__product mt-100  pages">
     <div class="container">
       <div class="row">
         <div class="add__product-header mb-3">
@@ -27,6 +27,23 @@
                   <multiselect
                       v-model="selected"
                       :options="listCategory"
+                      :searchable="true"
+                      :close-on-select="true"
+                      :allow-empty="false"
+                      label="name"
+                      placeholder="Select one">
+                    >
+                  </multiselect>
+                </div>
+              </div>
+              <div class="content__item">
+                <label class=" content__label fs-12">Department
+                  <span class="text-danger">*</span>
+                </label>
+                <div class="content__input">
+                  <multiselect
+                      v-model="selectedDepartment"
+                      :options="listDepartment"
                       :searchable="true"
                       :close-on-select="true"
                       :allow-empty="false"
@@ -83,7 +100,7 @@
               <div class="title-text">Product Images</div>
             </div>
             <div class="content">
-              <image-upload :old-file="product.image"  @multiFile ="handleMulti" ></image-upload>
+              <image-upload :detail="true" :old-file="product.image"  @multiFile ="handleMulti" ></image-upload>
             </div>
           </div>
           <div class="add__product-content cards">
@@ -197,7 +214,7 @@
             </div>
           </div>
           <div class="content-footer">
-            <button @click="handleCreateProduct" class="btn btn--primary">Save</button>
+            <button @click="handleUpdateProduct" class="btn btn--primary">Save</button>
           </div>
         </div>
         <div class="col-md-4">
@@ -231,7 +248,8 @@
 
 <script>
 import { FETCH_CATEGORY} from "../../store/modules/category";
-import {GET_DETAIL_PRODUCT} from "../../store/modules/product";
+import {FETCH_DEPARTMENT} from "../../store/modules/department";
+import {GET_DETAIL_PRODUCT,UPDATE_PRODUCT} from "../../store/modules/product";
 import {mapActions,mapState} from 'vuex'
 import ImageUpload from "../../../uikit/components/input/ImageUpload";
 import SingleUpload from "../../../uikit/components/input/SingleUpload";
@@ -244,24 +262,13 @@ export default {
   data(){
     return{
       selected: null,
+      selectedDepartment: null,
       editorData: '',
       editorConfig: {
         // The configuration of the editor.
       },
-      options: [
-        { name: 'Vue.js', language: 'JavaScript' },
-        { name: 'Rails', language: 'Ruby' },
-        { name: 'Sinatra', language: 'Ruby' },
-        { name: 'Laravel', language: 'PHP' }
-      ],
       selectedBrand: null,
       selectedColor: null,
-      optionsBrand: [
-        { name: 'Vue.js', language: 'JavaScript' },
-        { name: 'Rails', language: 'Ruby' },
-        { name: 'Sinatra', language: 'Ruby' },
-        { name: 'Laravel', language: 'PHP' }
-      ],
       quantity:0,
       discount:0,
       listColor:color,
@@ -281,14 +288,18 @@ export default {
     }),
     ...mapState('product',{
       product:(state) => state.product
-    })
+    }),
+    ...mapState('department',{
+      listDepartment:(state) => state.department
+    }),
   },
   created() {
     this.init()
   },
   methods: {
     ...mapActions('category',[FETCH_CATEGORY]),
-    ...mapActions('product',[GET_DETAIL_PRODUCT]),
+    ...mapActions('department',[FETCH_DEPARTMENT]),
+    ...mapActions('product',[GET_DETAIL_PRODUCT,UPDATE_PRODUCT]),
     async init(){
       const { id } = this.$route.params
       let result=  await this[FETCH_CATEGORY]()
@@ -307,14 +318,20 @@ export default {
       }
       this.name = this.product.name
       if(this.product.category){
-        this.selected = this.listCategory.filter(element =>{
+        this.selected = this.listCategory.find(element =>{
           return element._id == this.product.category
+        })
+      }
+      if(this.product.department){
+        this.selectedDepartment = this.listDepartment.find(element =>{
+          return element._id == this.product.department
         })
       }
       this.editorData = this.product.description
       this.status = this.product.status
       this.selectedColor = this.product.color
       this.optionSize = this.product.varians
+      this.multiFile = this.product.image
     },
     handleRemoveShopValue(option) {
       let index = this.optionSize.indexOf(option)
@@ -347,31 +364,34 @@ export default {
     handleMulti(file){
       this.multiFile = file
     },
-    async handleCreateProduct(){
-      // let params={
-      //   name:this.name,
-      //   description:this.editorData,
-      //   discount:this.discount,
-      //   category:this.selected,
-      //   color:this.selectedColor,
-      //   image:this.multiFile,
-      //   varians:this.optionSize,
-      //   status:this.status
-      // }
-      // await this[CREATE_PRODUCT](params).then(res=>{
-      //   if(res){
-      //     this.$toast.success('Success', {
-      //       position: "top-right",
-      //     })
-      //     this.$router.push({name:'product'})
-      //   }
-      // }).catch(err=>{
-      //   err.forEach(element=>{
-      //     this.$toast.error(`${element.msg}`, {
-      //       position: "top-right",
-      //     })
-      //   })
-      // })
+    async handleUpdateProduct(){
+      const { id } = this.$route.params
+      let params={
+        id:id,
+        name:this.name,
+        description:this.editorData,
+        discount:this.discount,
+        category:this.selected._id,
+        department:this.selectedDepartment._id,
+        color:this.selectedColor,
+        image:this.multiFile,
+        varians:this.optionSize,
+        status:this.status
+      }
+      await this[UPDATE_PRODUCT](params).then(res=>{
+        if(res){
+          this.$toast.success('Success', {
+            position: "top-right",
+          })
+          this.$router.push({name:'product'})
+        }
+      }).catch(err=>{
+        err.forEach(element=>{
+          this.$toast.error(`${element.msg}`, {
+            position: "top-right",
+          })
+        })
+      })
     },
     updateShip(e){
       this.ship = e

@@ -2,14 +2,17 @@ import {productService} from "../../../service/product.service";
 export const CREATE_PRODUCT = "createProduct"
 export const DELETE_PRODUCT = "deleteProduct"
 export const GET_PRODUCT = "getProduct"
+export const GET_FILE = "getFile"
 export const GET_DETAIL_PRODUCT = "getDetailProduct"
 export const FETCH_PRODUCT = "fetchProduct"
 export const FETCH_DETAIL_PRODUCT = "FetchDetailProduct"
+export const UPDATE_PRODUCT = "updateProduct"
 export const FETCH_COUNT = "fetchCount"
 
 export const state={
     products:[],
     product:{},
+    files:[],
     count:0
 }
 export const mutations={
@@ -22,6 +25,10 @@ export const mutations={
     [FETCH_DETAIL_PRODUCT](state, payload) {
         state.product = payload
     },
+    [GET_FILE](state, payload) {
+        state.files = payload
+    },
+
 }
 export const actions={
     // eslint-disable-next-line
@@ -58,6 +65,24 @@ export const actions={
         if(!response || !response.products){
             return {success:false,message:response.message}
         }
+        return {success:true}
+    },
+    // eslint-disable-next-line
+    async updateProduct({commit},payload){
+        let response =  await  productService.updateProductService(payload)
+        if(!response || !response.product){
+            return {success:false,message:response.message}
+        }
+        return {success:true}
+    },
+
+    // eslint-disable-next-line
+    async getFile({commit},payload){
+        let response =  await  productService.getAllFile()
+        if(!response || !response.files){
+            return {success:false,message:response.message}
+        }
+        commit(GET_FILE,response.files)
         return {success:true}
     },
 }

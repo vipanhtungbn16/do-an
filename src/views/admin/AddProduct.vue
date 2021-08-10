@@ -1,5 +1,5 @@
 <template>
-  <div class="add__product  pages">
+  <div class="add__product mt-100  pages">
     <div class="container">
       <div class="row">
         <div class="add__product-header mb-3">
@@ -33,6 +33,23 @@
                         label="name"
                         placeholder="Select one">
                     >
+                    </multiselect>
+                  </div>
+                </div>
+                <div class="content__item">
+                  <label class=" content__label fs-12">Department
+                    <span class="text-danger">*</span>
+                  </label>
+                  <div class="content__input">
+                    <multiselect
+                        v-model="selectedDepartment"
+                        :options="listDepartment"
+                        :searchable="true"
+                        :close-on-select="true"
+                        :allow-empty="false"
+                        label="name"
+                        placeholder="Select one">
+                      >
                     </multiselect>
                   </div>
                 </div>
@@ -232,6 +249,7 @@
 <script>
 import { FETCH_CATEGORY} from "../../store/modules/category";
 import {CREATE_PRODUCT} from "../../store/modules/product";
+import {FETCH_DEPARTMENT} from "../../store/modules/department";
 import {mapActions,mapState} from 'vuex'
 import ImageUpload from "../../../uikit/components/input/ImageUpload";
 import SingleUpload from "../../../uikit/components/input/SingleUpload";
@@ -244,24 +262,13 @@ export default {
   data(){
     return{
       selected: null,
+      selectedDepartment: null,
       editorData: '<p>Content of the product.</p>',
       editorConfig: {
         // The configuration of the editor.
       },
-      options: [
-        { name: 'Vue.js', language: 'JavaScript' },
-        { name: 'Rails', language: 'Ruby' },
-        { name: 'Sinatra', language: 'Ruby' },
-        { name: 'Laravel', language: 'PHP' }
-      ],
       selectedBrand: null,
       selectedColor: null,
-      optionsBrand: [
-        { name: 'Vue.js', language: 'JavaScript' },
-        { name: 'Rails', language: 'Ruby' },
-        { name: 'Sinatra', language: 'Ruby' },
-        { name: 'Laravel', language: 'PHP' }
-      ],
       quantity:0,
       discount:0,
       listColor:color,
@@ -278,6 +285,9 @@ export default {
   computed:{
     ...mapState('category',{
       listCategory:(state) =>state.category
+    }),
+    ...mapState('department',{
+      listDepartment:(state) =>state.department
     })
   },
   created() {
@@ -285,11 +295,19 @@ export default {
   },
   methods: {
     ...mapActions('category',[FETCH_CATEGORY]),
+    ...mapActions('department',[FETCH_DEPARTMENT]),
     ...mapActions('product',[CREATE_PRODUCT]),
     async init(){
       let result=  await this[FETCH_CATEGORY]()
       if(!result.success){
         this.$toast.success(result.message, {
+          position: "top-right",
+        })
+        return
+      }
+      let result2=  await this[FETCH_DEPARTMENT]()
+      if(!result2.success){
+        this.$toast.success(result2.message, {
           position: "top-right",
         })
         return
@@ -331,6 +349,7 @@ export default {
         name:this.name,
         description:this.editorData,
         discount:this.discount,
+        department:this.selectedDepartment,
         category:this.selected,
         color:this.selectedColor,
         image:this.multiFile,

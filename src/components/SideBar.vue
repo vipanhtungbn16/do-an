@@ -10,7 +10,7 @@
                @mouseout="onHover(-1)" class="nav__item" :class="{active: isActive(item.route) || childrenNameRoute(item.title)
       ,hover: hoverIndex === i,}">
             <router-link class="nav__link" :to="item.route">
-              <box-icon color="#ffffff" :type = 'item.type' :name='item.icon' class = "nav__toggle" id="nav-toggle" ></box-icon>
+              <i :class="item.class"  class = "nav__toggle" id="nav-toggle" ></i>
               <span class="nav__name">{{item.title}}</span>
             </router-link>
           </div>
@@ -30,25 +30,27 @@ export default {
       menus:[
         {
           title: 'Dashboard',
-          icon: 'dashboard',
+          class: 'fas fa-chart-line',
           route: {name:'overview'},
-          type:'solid'
         },
         {
           title: 'Product',
-          icon: 't-shirt',
+          class: 'fas fa-tshirt',
           route:  {name:'product'},
-          type:'solid'
         },
         {
           title: 'Category',
-          icon: 'category',
+          class: 'fas fa-list-alt',
           route: {name:'category'},
-          type:'solid'
+        },
+        {
+          title: 'Department',
+          class: 'fas fa-restroom',
+          route: {name:'department'},
         },
         {
           title: 'User',
-          icon: 'user',
+          class: "fas fa-user-tie",
           route: '/',
         },
       ]
@@ -83,3 +85,9 @@ export default {
   }
 }
 </script>
+<style>
+.nav__toggle{
+  width: 20px !important;
+  max-width: 20px;
+}
+</style>

@@ -10,6 +10,7 @@ const routes = [
     path: "/",
     name: "Home",
     component: Home,
+    meta: {layout:'client' }
   },
   {
     path: "/about",
@@ -56,11 +57,23 @@ const routes = [
   { path: '/admin/category/:id',component: () =>
         import(/* webpackChunkName: "about" */ "../views/admin/DetailCategory"),
     name:'category-detail',
-    meta: { transitionName: 'slide' },
   },
   { path: '/admin/category/add',component: () =>
         import(/* webpackChunkName: "about" */ "../views/admin/AddCategory"),
     name:'add-category'
+  },
+  { path: '/admin/department',component: () =>
+        import(/* webpackChunkName: "about" */ "../views/admin/Department"),
+    name:'department',
+    meta: { transitionName: 'slide' },
+  },
+  { path: '/admin/department/add',component: () =>
+        import(/* webpackChunkName: "about" */ "../views/admin/AddDeparment"),
+    name:'add-department'
+  },
+  { path: '/admin/department/:id',component: () =>
+        import(/* webpackChunkName: "about" */ "../views/admin/DetailDepartment"),
+    name:'department-detail',
   },
 ];
 

@@ -58,11 +58,40 @@ async  function  detailProductService(payload){
         })
 
 }
+async  function  updateProductService(payload){
+    let option = {
+        method:"PUT",
+        headers:{
+            "Content-type": "application/json",
+            "x-access-token": AuthService.getAccessToken(),
+        },
+        body:JSON.stringify(payload)
+    }
+    return await fetch(`http://localhost:3000/product/update/${payload.id}`,option).then(userService.handleResponse)
+        .then(product=>{
+            return product
+        })
 
+}
+
+async  function  getAllFile(){
+    let option = {
+        method:"GET",
+        headers:{
+            "Content-type": "application/json",
+        },
+    }
+    return await fetch(`http://localhost:3000/upload/files`,option).then(userService.handleResponse)
+        .then(product=>{
+            return product
+        })
+}
 
 export const productService = {
     createProductService,
     getProductService,
     deleteProductService,
-    detailProductService
+    detailProductService,
+    updateProductService,
+    getAllFile
 }
