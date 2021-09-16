@@ -8,6 +8,8 @@ export const FETCH_PRODUCT = "fetchProduct"
 export const FETCH_DETAIL_PRODUCT = "FetchDetailProduct"
 export const UPDATE_PRODUCT = "updateProduct"
 export const FETCH_COUNT = "fetchCount"
+export const GET_PRODUCT_BY_SLUG = "getProductBySlug"
+
 
 export const state={
     products:[],
@@ -30,6 +32,7 @@ export const mutations={
     },
 
 }
+
 export const actions={
     // eslint-disable-next-line
     async createProduct({commit},payload){
@@ -49,6 +52,17 @@ export const actions={
         commit(FETCH_PRODUCT,response.products)
         commit(FETCH_COUNT,response.pages)
         return {success:true}
+    },
+
+    // eslint-disable-next-line
+    async getProductBySlug({commit},payload){
+        let response =  await  productService.getProductSlugService(payload)
+        if(!response || !response.products){
+            return {success:false,message:response.message}
+        }
+        commit(FETCH_PRODUCT,response.products)
+        commit(FETCH_COUNT,response.pages)
+        return {success:true,products:response.products,page:response.pages,description:response.description,breadcum:response.breadcum}
     },
     // eslint-disable-next-line
     async getDetailProduct({commit},payload){

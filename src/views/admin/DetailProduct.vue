@@ -122,6 +122,8 @@
                       label="name"
                       :multiple="true"
                       track-by="name"
+                      @select="handleSelect"
+                      @remove="handleRemove"
                       placeholder="Select color">
                     >
                     <template slot="selection" slot-scope="{ values }">
@@ -169,7 +171,7 @@
                 </div>
               </div>
 
-              <div v-if="optionSize.length" class="content__item">
+              <div v-if="optionVarian.length" class="content__item">
                 <table class="content__item-table">
                   <thead>
                   <tr class="table-header">
@@ -177,11 +179,12 @@
                     <th width="150">Varian Price</th>
                     <th width="150">Quantity</th>
                     <th width="250">Photo</th>
+                    <th></th>
                   </tr>
                   </thead>
                   <tbody>
-                  <tr v-for="(item,i) in optionSize" :key="i">
-                    <td>{{item.size}}</td>
+                  <tr v-for="(item,i) in optionVarian" :key="i">
+                    <td>{{item.name}}</td>
                     <td>
                       <p-input placeholder="Price" type="text" v-model="item.price"></p-input>
                     </td>
@@ -190,6 +193,11 @@
                     </td>
                     <td>
                       <single-upload :detail="true" :old-file="item.image" @file="updateFile" :id="i" ></single-upload>
+                    </td>
+                    <td>
+                      <div style="cursor: pointer" @click="handleRmItem(item)" class="delete_item">
+                        <i class="far fa-trash-alt"></i>
+                      </div>
                     </td>
                   </tr>
                   </tbody>
@@ -208,7 +216,11 @@
                 <label class=" content__label fs-12">Description
                 </label>
                 <div class="content__input">
-                  <ckeditor v-model="editorData" :config="editorConfig"></ckeditor>
+                  <quill-editor v-model="content"
+                                ref="myQuillEditor"
+                                :options="editorOption"
+                  >
+                  </quill-editor>
                 </div>
               </div>
             </div>
@@ -256,6 +268,7 @@ import SingleUpload from "../../../uikit/components/input/SingleUpload";
 import {color} from '../../share/color.js'
 import PCheckbox from "../../../uikit/components/input/PCheckbox";
 import {defaultVariant} from "../../helper/product";
+import _ from 'lodash';
 export default {
   name: "DetailProduct",
   components:{PCheckbox, ImageUpload,SingleUpload},
@@ -263,16 +276,34 @@ export default {
     return{
       selected: null,
       selectedDepartment: null,
-      editorData: '',
-      editorConfig: {
-        // The configuration of the editor.
+      content: '<h2>I am Example</h2>',
+      editorOption: {
+        modules: {
+          toolbar: [
+            ['bold', 'italic', 'underline', 'strike'],
+            ['blockquote', 'code-block'],
+            [{ 'header': 1 }, { 'header': 2 }],
+            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+            [{ 'script': 'sub' }, { 'script': 'super' }],
+            [{ 'indent': '-1' }, { 'indent': '+1' }],
+            [{ 'direction': 'rtl' }],
+            [{ 'size': ['small', false, 'large', 'huge'] }],
+            [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+            [{ 'font': [] }],
+            [{ 'color': [] }, { 'background': [] }],
+            [{ 'align': [] }],
+            ['clean'],
+            ['link', 'image', 'video']
+          ],
+        }
       },
       selectedBrand: null,
-      selectedColor: null,
+      selectedColor: [],
       quantity:0,
       discount:0,
       listColor:color,
       optionSize:[],
+      optionVarian:[],
       valueSize:'',
       multiFile:[],
       name:'',
@@ -292,6 +323,12 @@ export default {
     ...mapState('department',{
       listDepartment:(state) => state.department
     }),
+    isSelectColor(){
+      return this.selectedColor.length > 0
+    },
+    isSelectedSize(){
+      return this.optionSize.length > 0
+    }
   },
   created() {
     this.init()
@@ -302,8 +339,10 @@ export default {
     ...mapActions('product',[GET_DETAIL_PRODUCT,UPDATE_PRODUCT]),
     async init(){
       const { id } = this.$route.params
+      let temp=[]
       let result=  await this[FETCH_CATEGORY]()
       let productResult =  await this[GET_DETAIL_PRODUCT](id)
+      let departmentResult = await this[FETCH_DEPARTMENT]()
       if(!result.success){
         this.$toast.success(result.message, {
           position: "top-right",
@@ -312,6 +351,12 @@ export default {
       }
       if(!productResult.success){
         this.$toast.success(productResult.message, {
+          position: "top-right",
+        })
+        return
+      }
+      if(!departmentResult.success){
+        this.$toast.success(departmentResult.message, {
           position: "top-right",
         })
         return
@@ -327,17 +372,27 @@ export default {
           return element._id == this.product.department
         })
       }
-      this.editorData = this.product.description
+      this.content = this.product.description
       this.status = this.product.status
       this.selectedColor = this.product.color
-      this.optionSize = this.product.varians
+      this.optionVarian = this.product.varians
+      temp =  this.optionVarian.map(item => {return {size:item.size}})
+      this.optionSize = _.uniqBy(temp,e=>{return e.size} )
       this.multiFile = this.product.image
     },
     handleRemoveShopValue(option) {
-      let index = this.optionSize.indexOf(option)
-      if (index > -1) {
-        this.optionSize.splice(index, 1)
+      let indexS = this.optionSize.indexOf(option)
+      if (indexS > -1) {
+        this.optionSize.splice(indexS, 1)
       }
+      this.optionVarian = this.optionVarian.filter(item=> item.size !== option.size)
+    },
+    checkVariansExits(value){
+      const isExits = this.optionVarian.some(element => element.name == value)
+      return isExits
+    },
+    handleRmItem(item){
+     this.optionVarian = this.optionVarian.filter(option=> item.name !== option.name)
     },
     addOptionValue() {
       if (this.valueSize.trim() == '') {
@@ -353,13 +408,30 @@ export default {
         this.$toast.error('Size is exits', {
           position: "top-right",
         })
+        this.valueSize =''
         return
       }
-      this.optionSize.push(defaultVariant(this.valueSize))
+      this.optionSize.push({size:this.valueSize})
+      if(!this.isSelectColor){
+        this.optionVarian.push(defaultVariant(this.valueSize,null,this.valueSize))
+        this.valueSize = ''
+        return;
+      }
+      this.selectedColor.forEach(item=>{
+        if(this.checkVariansExits(`${item.name}`)){
+          this.optionVarian = this.optionVarian.map(element =>{
+            element.name = `${item.name}-${this.valueSize}`
+            element.size = this.valueSize
+            return element
+          })
+          return
+        }
+        this.optionVarian.push(defaultVariant(`${item.name}-${this.valueSize}`,item.hex,this.valueSize))
+      })
       this.valueSize = ''
     },
     updateFile(file,i){
-      this.optionSize[i].image = file
+      this.optionVarian[i].image = file
     },
     handleMulti(file){
       this.multiFile = file
@@ -369,13 +441,13 @@ export default {
       let params={
         id:id,
         name:this.name,
-        description:this.editorData,
+        description:this.content,
         discount:this.discount,
         category:this.selected._id,
-        department:this.selectedDepartment._id,
+        department:this.selectedDepartment?this.selectedDepartment._id:undefined,
         color:this.selectedColor,
         image:this.multiFile,
-        varians:this.optionSize,
+        varians:this.optionVarian,
         status:this.status
       }
       await this[UPDATE_PRODUCT](params).then(res=>{
@@ -398,6 +470,25 @@ export default {
     },
     updateStatus(e){
       this.status = e
+    },
+    handleSelect(selectedOption){
+      if(!this.isSelectedSize){
+        this.optionVarian.push(defaultVariant(selectedOption.name,selectedOption.hex))
+      }
+      this.optionSize.forEach(item=>{
+        if(this.checkVariansExits(`${item.size}`)){
+          this.optionVarian = this.optionVarian.map(element =>{
+            element.name = `${selectedOption.name}-${item.size}`
+            element.hex = selectedOption.hex
+            return element
+          })
+          return
+        }
+        this.optionVarian.push(defaultVariant(`${selectedOption.name}-${item.size}`,selectedOption.hex,item.size))
+      })
+    },
+    handleRemove(option){
+      this.optionVarian= this.optionVarian.filter(element => element.hex !== option.hex)
     }
   }
 }

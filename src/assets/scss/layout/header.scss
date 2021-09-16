@@ -28,6 +28,93 @@
       padding: 0 20px;
       letter-spacing: 2px;
       font-size: 13.5px;
+      text-transform: uppercase;
+      position: relative;
+      cursor: pointer;
+      overflow: hidden;
+      .link{
+        text-decoration: none;
+        color: unset;
+        display: inline-block;
+        line-height: 70px;
+      }
+      &:hover{
+        .header__menu-sub{
+          display: block;
+        }
+        &:before{
+          transform: translateX(0%);
+        }
+      }
+      &:before{
+        position: absolute;
+        content: "";
+        width: 100%;
+        transform: translateX(-100%);
+        height: 3px;
+        left: 0;
+        bottom: 0;
+        transition: all ease-in-out 0.3s;
+        background-color: saddlebrown;
+      }
+    }
+    &-sub{
+      position: fixed;
+      background-color: #FFFFFF;
+      width: 100vw;
+      left: 0;
+      top: 70px;
+      box-shadow: rgb(221 221 221) 2px 2px 5px;
+      padding: 25px 5% 10px;
+      list-style: none;
+      display: flex;
+      justify-content: flex-start;
+      flex-direction: column;
+      display: none;
+      &:before{
+        content: "";
+        width: 100%;
+        position: absolute;
+        height: 30px;
+        left: 0;
+        top: -30px;
+
+      }
+      &-item{
+        text-align: left;
+        color: #808080;
+        text-transform: capitalize;
+        letter-spacing: 1px;
+        margin: 8px 0;
+        &:hover{
+          color: black;
+        }
+      }
+    }
+    &-base{
+      float: left;
+    }
+    &-title{
+      font-size: 16px;
+      letter-spacing: 1.5px;
+      margin-bottom: 15px;
+      text-decoration: underline;
+      color:black;
+      text-align: left;
+    }
+    &-childrent{
+      .child-title{
+        font-size: 16px;
+        letter-spacing: 1.5px;
+        margin-bottom: 15px;
+        text-decoration: underline !important;
+        color: black !important;
+        text-transform: uppercase !important;
+        font-weight: 500;
+        display: block;
+      }
+      float: left;
+      margin-left: 90px;
     }
   }
   &__user{
@@ -44,5 +131,8 @@
   &.on-scroll{
     background-color: white;
     box-shadow: rgb(221 221 221) 2px 2px 5px;
+  }
+  &.hover{
+    background-color: white;
   }
 }

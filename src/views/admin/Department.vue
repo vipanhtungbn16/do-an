@@ -39,7 +39,7 @@
                 <tbody>
                 <tr v-for="(item,i) in department" :key="i">
                   <td width="10">
-                    <span class="fs-12">{{item.index + 1}}</span>
+                    <span class="fs-12">{{i + 1}}</span>
                   </td>
                   <td>
                     <span class="fs-12">{{item.name}}</span>

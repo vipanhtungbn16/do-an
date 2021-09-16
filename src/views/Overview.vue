@@ -6,7 +6,6 @@
           <div class="overview__content">
             <div class="overview__order ">
               <div class="box-icon">
-                <box-icon name='notepad'></box-icon>
               </div>
               <div class="number__order">
                 23 789
@@ -15,7 +14,6 @@
             </div>
             <div class="overview__profit ">
               <div class="box-icon">
-                <box-icon name='dollar-circle'></box-icon>
               </div>
               <div class="number__order">
                 $23 789

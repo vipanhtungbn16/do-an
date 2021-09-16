@@ -2,7 +2,7 @@
   <div class="sidebar" :class="{expander:isOpenSideBar || hoverIndex >= 0  }" id ="navbar">
       <nav class="nav" >
         <div @click="toggleSideBar" class="nav__brand">
-          <box-icon name='menu' color="#ffffff" class = "nav__toggle" id="nav-toggle" ></box-icon>
+          <i id="nav-toggle" class="fas fa-bars nav__toggle"></i>
           <a class="nav__logo" href="#">HONO</a>
         </div>
         <div class="nav__list">
@@ -10,7 +10,7 @@
                @mouseout="onHover(-1)" class="nav__item" :class="{active: isActive(item.route) || childrenNameRoute(item.title)
       ,hover: hoverIndex === i,}">
             <router-link class="nav__link" :to="item.route">
-              <i :class="item.class"  class = "nav__toggle" id="nav-toggle" ></i>
+              <i :class="item.class"></i>
               <span class="nav__name">{{item.title}}</span>
             </router-link>
           </div>
@@ -52,6 +52,11 @@ export default {
           title: 'User',
           class: "fas fa-user-tie",
           route: '/',
+        },
+        {
+          title: 'Uploaded Files',
+          class: "fas fa-file-image",
+          route: {name: 'uploaded'},
         },
       ]
     }

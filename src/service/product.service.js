@@ -87,11 +87,25 @@ async  function  getAllFile(){
         })
 }
 
+async function getProductSlugService(payload){
+    let option ={
+        method:"GET",
+        headers:{
+            "Content-type": "application/json",
+            "x-access-token": AuthService.getAccessToken(),
+        }
+    }
+    return await fetch(`http://localhost:3000/product/getbyslug?${buildQueryString(payload)}`,option).then(userService.handleResponse)
+        .then(product=>{
+            return product
+        })
+}
 export const productService = {
     createProductService,
     getProductService,
     deleteProductService,
     detailProductService,
     updateProductService,
+    getProductSlugService,
     getAllFile
 }

@@ -44,7 +44,7 @@
                       <span class=" text-product">{{item.name}}</span>
                     </td>
                     <td>
-                      <img v-if="item.image.length" class="img-product" :src="item.image[0]">
+                      <img v-if="item.image.length" class="img-product" v-lazy="item.image[0]">
                     </td>
                     <td>
                       <span v-if="item.varians.length==0" class="text-product">0</span>
@@ -95,7 +95,6 @@
           </div>
         </div>
       </div>
-      <modal-upload :visible.sync="isVisibleModalUpload"></modal-upload>
     </div>
     <modal-confirm :title="`Delete Confirmation`" :description="`Are you sure delete this ?`" @action="handleDelete"  :visible.sync="isVisibleModal">
     </modal-confirm>
@@ -107,11 +106,10 @@ import {mapActions,mapState} from 'vuex'
 import {GET_PRODUCT,DELETE_PRODUCT} from "../store/modules/product";
 import minxinRouter from "../minxis/route"
 import ModalConfirm from "../../uikit/components/Modal/ModalConfirm";
-import ModalUpload from "../../uikit/components/Modal/ModalUpload";
 export default {
   name: "product",
   mixins:[minxinRouter],
-  components:{ModalConfirm,ModalUpload},
+  components:{ModalConfirm},
   mounted() {
     this.init()
   },
@@ -124,7 +122,6 @@ export default {
       search:"",
       isFetching : false,
       isVisibleModal:false,
-      isVisibleModalUpload:false,
       idDelete:''
     }
 

@@ -36,6 +36,15 @@
                   </multiselect>
                 </div>
               </div>
+              <div class="content__item">
+                <label class=" content__label col-md-3 fs-12">Description
+                  <span class="text-danger">*</span>
+                </label>
+                <div class="content__input col-md-9">
+                  <textarea v-model="description">
+                  </textarea>
+                </div>
+              </div>
             </div>
             <div class="content-footer">
               <button class="btn btn--primary" @click="handleCreate">Save</button>
@@ -57,7 +66,8 @@ export default {
     return{
       selectedParent:null,
       selectedCate:null,
-      name:''
+      name:'',
+      description:''
     }
   },
   computed:{
@@ -85,6 +95,7 @@ export default {
         return
       }
       this.name = this.department.name
+      this.description = this.department.description
       if(this.department.categorys){
         this.selectedCate = this.department.categorys.map(element =>{
           return this.listCategory.find(item=> item._id == element)
@@ -98,7 +109,8 @@ export default {
         id:id,
         content:{
           name:this.name,
-          categorys:this.selectedCate
+          categorys:this.selectedCate,
+          description:this.description
         }
       }
       await this[UPDATE_DEPARTMENT](params).then(res =>{

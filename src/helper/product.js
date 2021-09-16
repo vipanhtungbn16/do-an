@@ -1,10 +1,11 @@
-export function defaultVariant(name='') {
+export function defaultVariant(name='',hex = null,size = null) {
     name = name.trim()
     return {
-            size: name,
-            sku: '',
+            name: name,
             quantity: 1,
             price: 0,
-            image:''
+            image:'',
+            hex:hex,
+            size:size
     }
 }

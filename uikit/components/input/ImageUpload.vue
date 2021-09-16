@@ -3,31 +3,33 @@
   <div class="multi__upload-content content__item">
     <span class="multi__upload-title content__label fs-12">Images</span>
     <div class="multi__upload-input">
-      <label for="upload__file">
-        <span class="upload__file-title">Choose file</span>
+      <label>
+        <span class="upload__file-title" @click="handleModal">Choose file</span>
       </label>
-      <input id="upload__file" hidden type="file" class="upload" @change="addImg" ref="inputer" multiple accept="image/png,image/jpeg,image/gif,image/jpg"/>
     </div>
   </div>
   <div class="multi__upload-preview">
     <div class="fake-title">List</div>
     <ul class="list__preview">
       <li v-for='(value, key) in responseFile' :key="key" class="list__preview-item col-md-3">
-        <img :src="value">
-        <a class="close" @click="delImg(key,value)">
-          <box-icon color="#377dff" name='x'></box-icon>
+        <img v-lazy="value">
+        <a class="close" @click="delImg(key)">
+          <i class="fas fa-times"></i>
         </a>
       </li>
     </ul>
   </div>
+  <modal-upload @add="handleAdd" :visible.sync="isVisible"></modal-upload>
 </div>
 </template>
 <script>
 import AuthService from "../../../src/helper/authService";
 import axios from "axios";
-import {userService} from "../../../src/service/user.service";
+// import {userService} from "../../../src/service/user.service";
+import ModalUpload from "../Modal/ModalUpload";
 export default{
   name:'ImageUpload',
+  components:{ModalUpload},
   props:{
     oldFile:{
       type:Array,
@@ -40,7 +42,8 @@ export default{
       imgs: {},
       imgLen:0,
       file:null,
-      responseFile:[]
+      responseFile:[],
+      isVisible:false
     }
   },
 
@@ -48,71 +51,39 @@ export default{
     exitEdit(){
       this.$emit('closeEdit', false)
     },
-    addImg(){
-      let inputDOM = this.$refs.inputer;
-      // Get file data through DOM
-      this.file = inputDOM.files;
-      let oldLen=this.imgLen;
-      let len=this.file.length+oldLen;
-      if(len>10){
-        alert('Up to 10 sheets can be uploaded');
-        return false;
-      }
-      for (let i=0; i < this.file.length; i++) {
-        let size = Math.floor(this.file[i].size / 1024);
-        if (size > 5*1024*1024) {
-          alert('Please select a picture within 5M! ');
-          return false
-        }
-        this.imgLen++;
-        this.$set(this.imgs,this.file[i].name+'?'+new Date().getTime()+i,this.file[i]);
-      }
-      this.submit()
+    handleModal(){
+      this.isVisible = true
     },
-    getObjectURL(file) {
-      let url = null ;
-      if (window.createObjectURL!==undefined) { // basic
-        url = window.createObjectURL(file) ;
-      } else if (window.URL!==undefined) { // mozilla(firefox)
-        url = window.URL.createObjectURL(file) ;
-      } else if (window.webkitURL!==undefined) { // webkit or chrome
-        url = window.webkitURL.createObjectURL(file) ;
-      }
-      return url ;
-    },
-    async delImg(key,value){
+    async delImg(key){
       this.$delete(this.responseFile,key);
-      let input1 = document.getElementById('upload__file')
-      input1.value = ''
+      // let input1 = document.getElementById('upload__file')
+      // input1.value = ''
       this.imgLen--;
-      if(!this.detail){
-        let img = value.split('/').pop()
-        let option = {
-          method:"POST",
-          headers:{
-            "Content-type": "application/json",
-            "x-access-token": AuthService.getAccessToken(),
-          },
-          body:JSON.stringify({name:img})
-        }
-        await fetch('http://localhost:3000/upload/delete',option).then(userService.handleResponse)
-            .then(res=>{
-              if(res.success){
-                this.$emit('multiFile',this.responseFile)
-                this.$toast.success('Success', {
-                  position: "top-right",
-                })
-              }
-
-            }).catch(err=>{
-              this.$toast.error(err.message, {
-                position: "top-right",
-              })
-            })
-      }
-
-
-
+      // if(!this.detail){
+      //   let img = value.split('/').pop()
+      //   let option = {
+      //     method:"POST",
+      //     headers:{
+      //       "Content-type": "application/json",
+      //       "x-access-token": AuthService.getAccessToken(),
+      //     },
+      //     body:JSON.stringify({name:img})
+      //   }
+      //   await fetch('http://localhost:3000/upload/delete',option).then(userService.handleResponse)
+      //       .then(res=>{
+      //         if(res.success){
+      //           this.$emit('multiFile',this.responseFile)
+      //           this.$toast.success('Success', {
+      //             position: "top-right",
+      //           })
+      //         }
+      //
+      //       }).catch(err=>{
+      //         this.$toast.error(err.message, {
+      //           position: "top-right",
+      //         })
+      //       })
+      // }
     },
      async submit(){
       for(let key in this.imgs){
@@ -138,6 +109,10 @@ export default{
          })
        });
     },
+    handleAdd(file){
+      this.responseFile = [...this.responseFile,...file]
+      this.$emit('multiFile',this.responseFile)
+    }
   },
   watch:{
     oldFile:function (){

@@ -9,12 +9,12 @@
         <div class="navbar__action">
           <div class="navbar__action-noti mr-24">
             <span class="is-noti"></span>
-            <box-icon name='bell' ></box-icon>
+            <i class="far fa-bell"></i>
           </div>
           <div class="navbar__action-user">
             <p-dropdown :id="`user`" >
              <div class="" slot="trigger" >
-               <box-icon type='solid' name='user'></box-icon>
+               <i class="far fa-user"></i>
              </div>
               <p-item>
                 <router-link class="item" to="/">

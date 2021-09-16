@@ -30,7 +30,6 @@ export default {
 
             const max = 200
             query.limit = query.limit <= max ? query.limit : max
-
             return Object.assign({}, this.$route.query, query)
         },
         handleUpdateRouteQuery(append = {}) {
@@ -61,7 +60,6 @@ export default {
     watch: {
         $route: function() {
             const filters = this.getRouteQuery()
-
             if (_.isEqual(filters, this.filter)) {
                 this.filter = filters
             }
